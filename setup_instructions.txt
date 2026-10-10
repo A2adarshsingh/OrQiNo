@@ -1,0 +1,91 @@
+OrQiNo — Setup Instructions
+
+1. Overview
+
+OrQiNo is an AI-powered Internet Trust Layer that analyzes Google search results and evaluates websites using content, security, and trust signals.
+
+The current MVP runs as a Cloudflare Worker.
+
+2. Requirements
+
+The following are required to run the current OrQiNo MVP:
+
+- Cloudflare account with Workers enabled
+- SerpAPI account and API key
+- Cloudflare Workers AI enabled
+- WHOISAPI credentials (three fallback keys are supported)
+- Google Web Risk API key
+- ThreatFox API key
+
+3. Cloudflare Worker Setup
+
+1. Create a Cloudflare Worker.
+2. Upload/deploy the complete OrQiNo Worker source (`worker.js`).
+3. Configure the required Worker secrets/environment variables listed below.
+
+4. Required API Credentials and Integrations
+
+SerpAPI
+- Secret name: `SERPAPI_KEY`
+- Purpose: Retrieves Google search results used by OrQiNo.
+
+Google Web Risk
+- Secret name: `WEBRISK_API_KEY`
+- Purpose: Performs web-risk/security checks for URLs.
+
+ThreatFox
+- Secret name: `THREATFOX_AUTH_KEY`
+- Purpose: Provides threat-intelligence information used by OrQiNo.
+
+WHOISAPI
+- Secret names:
+  - `whoisapi_1`
+  - `whoisapi_2`
+  - `whoisapi_3`
+- Purpose: Provides domain registration/domain-age information.
+- The Worker uses the configured WHOISAPI credentials as a fallback sequence. If one credential fails, the next available credential is attempted.
+
+5. Cloudflare Workers AI
+
+Create/configure a Cloudflare Workers AI binding named:
+
+`AI`
+
+The current OrQiNo content-classification pipeline uses:
+
+`@cf/meta/llama-3.3-70b-instruct-fp8-fast`
+
+The AI binding is also used by OrQiNo AI Mode.
+
+6. Other External Integration
+
+OrQiNo also uses a certificate-information endpoint for TLS/certificate checks.
+
+7. Security and Secrets
+
+Do not commit real API keys, authentication tokens, or Cloudflare credentials to GitHub.
+
+Configure all API credentials as Cloudflare Worker Secrets/Bindings.
+
+The GitHub repository should contain the application source and setup instructions, but no private credential values.
+
+8. Deployment
+
+1. Clone or download the OrQiNo repository.
+2. Configure all required API secrets and the `AI` binding in Cloudflare.
+3. Deploy the OrQiNo Worker source.
+4. Open the deployed Worker URL.
+5. Enter a search query and verify that search results and OrQiNo analysis are working.
+
+9. Current Application Flow
+
+User query
+→ OrQiNo Worker
+→ SerpAPI
+→ Search-result processing
+→ Content Intelligence and security analysis
+→ Website cards and Top Stories
+→ AI Mode through Cloudflare Workers AI
+
+10. Working OrQiNo link:
+https://orqino.orqino.workers.dev/
